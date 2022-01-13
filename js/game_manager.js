@@ -16,6 +16,54 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
 
 GameManager.prototype.auton = function () {
   console.log('auton started')
+  if (!this.auto || this.isGameTerminated()) return
+  
+  let moves = [];
+  const self = this;
+
+  for (let i = 0; i < 4; i++) {
+//
+    var cell, tile;
+    let direction = i;
+    var vector     = this.getVector(direction);
+    var traversals = this.buildTraversals(vector);
+    let score = 0;
+
+    traversals.x.forEach(function (x) {
+      traversals.y.forEach(function (y) {
+        cell = { x: x, y: y };
+        tile = self.grid.cellContent(cell);
+
+        if (tile) {
+          var positions = self.findFarthestPosition(cell, vector);
+          var next      = self.grid.cellContent(positions.next);
+
+          // Only one merger per row traversal?
+          if (next && next.value === tile.value && !next.mergedFrom) {
+            // Update the score
+            score += tile.value * 2;
+          }
+        }
+      });
+    });
+    moves.push({total: score, direction})
+  //
+  }
+  const bestmove = this.getBestMove(moves);
+  console.log(moves, bestmove)
+}
+
+GameManager.prototype.getBestMove = function (stic) {
+  let topScore = 0, topPath = [];
+  for (let i = 0; i < stic.length; i++) {
+    console.log(stic[i])
+    if (topScore <= stic[i].total) {
+      console.log('new top score')
+      topScore = stic[i].total;
+      topPath.push(stic[i].direction);
+    }
+  }
+  return topPath[Math.floor(Math.random() * topPath.length)]
 }
 
 GameManager.prototype.getAuto = function () {
@@ -148,7 +196,6 @@ GameManager.prototype.move = function (direction) {
   var self = this;
 
   if (this.isGameTerminated()) return; // Don't do anything if the game's over
-
   var cell, tile;
 
   var vector     = this.getVector(direction);
