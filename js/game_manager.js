@@ -5,12 +5,28 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
   this.actuator       = new Actuator;
 
   this.startTiles     = 2;
+  this.auto = false;
 
   this.inputManager.on("move", this.move.bind(this));
   this.inputManager.on("restart", this.restart.bind(this));
   this.inputManager.on("keepPlaying", this.keepPlaying.bind(this));
 
   this.setup();
+}
+
+GameManager.prototype.auton = function () {
+  console.log('auton started')
+}
+
+GameManager.prototype.getAuto = function () {
+  return this.auto
+}
+
+GameManager.prototype.setAuto = function (bool) {
+  this.auto = bool ? true : false;
+  if (this.auto) {
+    this.auton();
+  }
 }
 
 // Restart the game
