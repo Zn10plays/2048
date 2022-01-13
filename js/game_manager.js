@@ -14,7 +14,7 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
   this.setup();
 }
 
-GameManager.prototype.auton = function () {
+GameManager.prototype.auton = async function () {
   console.log('auton started')
   if (!this.auto || this.isGameTerminated()) return
   
@@ -49,8 +49,15 @@ GameManager.prototype.auton = function () {
     moves.push({total: score, direction})
   //
   }
-  const bestmove = this.getBestMove(moves);
-  console.log(moves, bestmove)
+  const bestMove = this.getBestMove(moves);
+  
+  this.move(bestMove);
+  await new Promise(resolve => {
+    setTimeout(() => {
+      resolve();
+    }, 100);
+  })
+  this.auton();
 }
 
 GameManager.prototype.getBestMove = function (stic) {
