@@ -55,7 +55,7 @@ GameManager.prototype.auton = async function () {
   await new Promise(resolve => {
     setTimeout(() => {
       resolve();
-    }, 100);
+    }, 1);
   })
   this.auton();
 }
